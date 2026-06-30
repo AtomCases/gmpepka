@@ -1487,9 +1487,17 @@
                 }
                 if (req.status === 'approved') {
                     html += '<div style="color:var(--success-color);">✅ Вывод одобрен</div>';
+                    if (req.withdraw_fee !== null) {
+                        html += '<div class="details"><strong>Списано:</strong> ' + req.total_deduct +
+                            ' mCoin (передача: ' + req.withdraw_fee + ' + комиссия 3%: ' + req.commission +
+                            ')</div>';
+                    }
                 }
                 if (req.status === 'rejected') {
                     html += '<div style="color:var(--danger-color);">❌ Вывод отклонен</div>';
+                    if (req.admin_comment) {
+                        html += '<div class="details"><strong>Причина:</strong> ' + req.admin_comment + '</div>';
+                    }
                 }
                 html += '</div>';
             }
@@ -1729,7 +1737,7 @@
             document.getElementById('modalTitle').textContent = 'Продать NFT';
 
             document.getElementById('modalBody').innerHTML =
-                '<div class="form-group"><label>Цена (mCoin)</label><input type="number" id="sellPriceInput" placeholder="100" min="1" /></div>' +
+                '<div class="form-group"><label>Цена (mCoin)</label><input type="number" id="sellPriceInput" placeholder="100" min="1" step="1" /></div>' +
                 '<button class="btn btn-primary btn-block" onclick="sellNFT(\'' + nftId +
                 '\')">Выставить</button>' +
                 '<button class="btn btn-secondary btn-block" onclick="closeModal()">Отмена</button>';
@@ -1737,12 +1745,19 @@
             modal.classList.add('active');
         }
 
+        // --- Sell NFT (ИСПРАВЛЕНА) ---
         async function sellNFT(nftId) {
             var priceInput = document.getElementById('sellPriceInput');
             var price = parseInt(priceInput.value);
 
-            if (!price || price <= 0) {
+            // Проверяем, что цена введена корректно
+            if (!priceInput.value || priceInput.value.trim() === '') {
                 alert('Введите цену');
+                return;
+            }
+
+            if (isNaN(price) || price <= 0) {
+                alert('Введите корректную цену (число больше 0)');
                 return;
             }
 
@@ -1880,7 +1895,7 @@
             alert('✅ Передано');
         }
 
-        // --- Withdraw NFT (заявка на вывод) ---
+        // --- Withdraw NFT ---
         async function withdrawNFT(nftId) {
             var tgId = prompt('Введите ваш Telegram Username (с @) или ID:', '');
             if (tgId === null) return;
@@ -2141,9 +2156,8 @@
             alert('❌ Отклонено');
         }
 
-        // --- Approve NFT Withdraw (с комиссией) ---
+        // --- Approve NFT Withdraw ---
         async function approveNFTWithdraw(requestId) {
-            // Получаем заявку
             var withdraws = await supabaseRequest('GET', 'nft_withdraw_requests', null, 'id=eq.' + requestId +
                 '&select=*,users(tg_id,username,mcoin_balance)');
             var req = withdraws && withdraws.length > 0 ? withdraws[0] : null;
@@ -2158,7 +2172,6 @@
                 return;
             }
 
-            // Запрашиваем сумму за передачу NFT
             var feeInput = prompt('Введите сумму за передачу NFT (mCoin):', '50');
             if (feeInput === null) return;
             var fee = parseInt(feeInput);
@@ -2167,11 +2180,9 @@
                 return;
             }
 
-            // Рассчитываем комиссию маркета (3%)
             var commission = Math.round(fee * 0.03);
             var totalDeduct = fee + commission;
 
-            // Получаем пользователя
             var users = await supabaseRequest('GET', 'users', null, 'id=eq.' + req.user_id);
             var user = users && users.length > 0 ? users[0] : null;
 
@@ -2180,7 +2191,6 @@
                 return;
             }
 
-            // Проверяем баланс
             if (user.mcoin_balance < totalDeduct) {
                 alert('❌ Недостаточно средств! Баланс пользователя: ' + user.mcoin_balance +
                     ' mCoin, необходимо: ' + totalDeduct + ' mCoin (из них ' + fee +
@@ -2188,7 +2198,6 @@
                 return;
             }
 
-            // Подтверждаем действие
             if (!confirm('✅ Подтвердить вывод?\n\n' +
                     'Пользователь: ' + (req.users ? req.users.tg_id : 'Неизвестно') + '\n' +
                     'NFT: ' + req.nft_name + '\n' +
@@ -2199,7 +2208,6 @@
                 return;
             }
 
-            // Обновляем заявку
             await supabaseRequest('PATCH', 'nft_withdraw_requests', {
                 status: 'approved',
                 withdraw_fee: fee,
@@ -2207,18 +2215,14 @@
                 total_deduct: totalDeduct
             }, 'id=eq.' + requestId);
 
-            // Списываем средства
             await supabaseRequest('PATCH', 'users', {
                 mcoin_balance: user.mcoin_balance - totalDeduct
             }, 'id=eq.' + req.user_id);
 
-            // Удаляем NFT из системы
             await supabaseRequest('DELETE', 'nfts', null, 'id=eq.' + req.nft_id);
 
-            // Удаляем листинг, если был
             await supabaseRequest('PATCH', 'market_listings', { status: 'cancelled' }, 'nft_id=eq.' + req.nft_id);
 
-            // Записываем транзакции
             await supabaseRequest('POST', 'transactions', {
                 user_id: req.user_id,
                 type: 'nft_withdraw_completed',
@@ -2229,7 +2233,6 @@
                 links: []
             });
 
-            // Записываем комиссию отдельно (для отчетности)
             await supabaseRequest('POST', 'transactions', {
                 user_id: req.user_id,
                 type: 'nft_withdraw_commission',
@@ -2263,7 +2266,6 @@
                 admin_comment: comment || 'Отклонено админом'
             }, 'id=eq.' + requestId);
 
-            // Возвращаем NFT в инвентарь
             await supabaseRequest('PATCH', 'nfts', { status: 'in_inventory' }, 'id=eq.' + req.nft_id);
 
             await supabaseRequest('POST', 'transactions', {
