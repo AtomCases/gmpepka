@@ -3,35 +3,29 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GMPepka</title>
+    <title>GMPRKT</title>
     <style>
-        /* ============================================================
-           ROOT VARIABLES (цветовая гамма от GMPortals)
-           ============================================================ */
         :root {
-            --bg-primary: #070b18;
-            --bg-secondary: #0b1020;
-            --bg-card: #0b1020;
-            --bg-input: #141b2b;
-            --bg-hover: #1a2440;
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #141414;
+            --bg-card: #1a1a1a;
+            --bg-input: #1e1e1e;
+            --bg-hover: #2a2a2a;
             --text-primary: #ffffff;
-            --text-secondary: #888888;
-            --text-muted: #555555;
-            --accent-color: #3390ec;
-            --accent-hover: #4aa3ff;
-            --border-color: #1a2440;
+            --text-secondary: #aaaaaa;
+            --text-muted: #666666;
+            --accent-color: #ffd700;
+            --accent-hover: #ffe44d;
+            --accent-dark: #cc9900;
+            --border-color: #2a2a2a;
             --success-color: #4ae08a;
             --danger-color: #ff6a6a;
             --warning-color: #ffb347;
-            --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
             --radius: 12px;
             --radius-sm: 8px;
             --transition: 0.3s ease;
         }
-
-        /* ============================================================
-           RESET & BASE
-           ============================================================ */
         * {
             margin: 0;
             padding: 0;
@@ -54,15 +48,11 @@
             background: var(--accent-color);
             border-radius: 4px;
         }
-
         .container {
             max-width: 1200px;
             margin: 0 auto;
         }
 
-        /* ============================================================
-           HEADER
-           ============================================================ */
         .header {
             background: var(--bg-secondary);
             padding: 14px 20px;
@@ -79,7 +69,7 @@
         .header h1 {
             font-size: 20px;
             font-weight: 700;
-            background: linear-gradient(90deg, var(--accent-color), #66b5ff);
+            background: linear-gradient(90deg, var(--accent-color), #ffe066);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             letter-spacing: -0.5px;
@@ -122,9 +112,6 @@
             font-size: 12px;
         }
 
-        /* ============================================================
-           BUTTONS
-           ============================================================ */
         .btn {
             padding: 6px 14px;
             border: none;
@@ -138,12 +125,12 @@
         }
         .btn-primary {
             background: var(--accent-color);
-            color: #fff;
+            color: #0a0a0a;
         }
         .btn-primary:hover {
             background: var(--accent-hover);
             transform: scale(1.02);
-            box-shadow: 0 4px 16px rgba(51, 144, 236, 0.3);
+            box-shadow: 0 4px 16px rgba(255, 215, 0, 0.3);
         }
         .btn-danger {
             background: var(--danger-color);
@@ -154,7 +141,7 @@
         }
         .btn-success {
             background: var(--success-color);
-            color: #0b0e1a;
+            color: #0a0a0a;
         }
         .btn-success:hover {
             background: #5af09a;
@@ -180,9 +167,6 @@
             font-size: 13px;
         }
 
-        /* ============================================================
-           TABS
-           ============================================================ */
         .tabs {
             display: flex;
             gap: 4px;
@@ -211,12 +195,9 @@
         .tab-btn.active {
             background: var(--bg-hover);
             color: var(--accent-color);
-            box-shadow: 0 0 20px rgba(51, 144, 236, 0.05);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.05);
         }
 
-        /* ============================================================
-           TAB CONTENT
-           ============================================================ */
         .tab-content {
             display: none;
             animation: fadeIn 0.25s ease;
@@ -243,9 +224,6 @@
             letter-spacing: -0.3px;
         }
 
-        /* ============================================================
-           NFT GRID
-           ============================================================ */
         .nft-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
@@ -263,7 +241,7 @@
         .nft-card:hover {
             border-color: var(--accent-color);
             transform: translateY(-3px);
-            box-shadow: 0 8px 30px rgba(51, 144, 236, 0.08);
+            box-shadow: 0 8px 30px rgba(255, 215, 0, 0.06);
         }
         .nft-card .image {
             width: 100%;
@@ -317,7 +295,7 @@
         }
         .rarity.legendary {
             background: #6a4a1a;
-            color: #ffb347;
+            color: var(--accent-color);
         }
         .nft-card .price {
             color: var(--accent-color);
@@ -342,13 +320,10 @@
             color: var(--success-color);
         }
         .status-badge.listed {
-            background: #1a2a4a;
+            background: #1a2a1a;
             color: var(--accent-color);
         }
 
-        /* ============================================================
-           FORMS
-           ============================================================ */
         .form-group {
             margin-bottom: 12px;
         }
@@ -376,7 +351,7 @@
         .form-group textarea:focus {
             outline: none;
             border-color: var(--accent-color);
-            box-shadow: 0 0 0 3px rgba(51, 144, 236, 0.1);
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
         }
         .form-group textarea {
             min-height: 70px;
@@ -388,9 +363,6 @@
             margin-top: 3px;
         }
 
-        /* ============================================================
-           DEPOSIT / WITHDRAW GRID
-           ============================================================ */
         .deposit-withdraw-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -418,9 +390,6 @@
             line-height: 1.5;
         }
 
-        /* ============================================================
-           ADMIN PANEL
-           ============================================================ */
         .admin-request {
             background: var(--bg-secondary);
             border-radius: var(--radius);
@@ -488,9 +457,6 @@
             margin-top: 10px;
         }
 
-        /* ============================================================
-           HISTORY
-           ============================================================ */
         .history-item {
             display: flex;
             justify-content: space-between;
@@ -533,7 +499,7 @@
             color: var(--danger-color);
         }
         .history-item .status.ready {
-            background: #1a2a4a;
+            background: #1a2a1a;
             color: var(--accent-color);
         }
         .history-item .links-list {
@@ -554,9 +520,6 @@
             text-decoration: underline;
         }
 
-        /* ============================================================
-           MODAL
-           ============================================================ */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -564,7 +527,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.85);
             backdrop-filter: blur(6px);
             z-index: 1000;
             align-items: center;
@@ -603,9 +566,6 @@
             color: #fff;
         }
 
-        /* ============================================================
-           EMPTY STATE
-           ============================================================ */
         .empty-state {
             text-align: center;
             padding: 40px 16px;
@@ -619,9 +579,6 @@
             font-size: 14px;
         }
 
-        /* ============================================================
-           LOADING
-           ============================================================ */
         .loading {
             text-align: center;
             padding: 40px;
@@ -642,9 +599,6 @@
             }
         }
 
-        /* ============================================================
-           FLEX HELPERS
-           ============================================================ */
         .flex-between {
             display: flex;
             justify-content: space-between;
@@ -660,9 +614,6 @@
             margin-bottom: 10px;
         }
 
-        /* ============================================================
-           LOGIN PAGE
-           ============================================================ */
         .login-page {
             display: flex;
             align-items: center;
@@ -683,7 +634,7 @@
             text-align: center;
             margin-bottom: 4px;
             font-size: 24px;
-            background: linear-gradient(90deg, var(--accent-color), #66b5ff);
+            background: linear-gradient(90deg, var(--accent-color), #ffe066);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -723,16 +674,10 @@
             margin: 16px 0;
         }
 
-        /* ============================================================
-           APP HIDDEN
-           ============================================================ */
         .app-hidden {
             display: none !important;
         }
 
-        /* ============================================================
-           RESPONSIVE
-           ============================================================ */
         @media (max-width: 768px) {
             .deposit-withdraw-grid {
                 grid-template-columns: 1fr;
@@ -778,12 +723,9 @@
 </head>
 <body>
 
-    <!-- ============================================================ -->
-    <!-- LOGIN PAGE -->
-    <!-- ============================================================ -->
     <div id="loginPage" class="login-page">
         <div class="login-box">
-            <h1>GMPepka</h1>
+            <h1>GMPRKT</h1>
             <div id="loginForm">
                 <p class="subtitle">Вход в маркет</p>
                 <div id="loginError" class="error"></div>
@@ -821,15 +763,11 @@
         </div>
     </div>
 
-    <!-- ============================================================ -->
-    <!-- MAIN APP -->
-    <!-- ============================================================ -->
     <div id="app" class="app-hidden">
         <div class="container">
 
-            <!-- HEADER -->
             <header class="header">
-                <h1>GMPepka</h1>
+                <h1>GMPRKT</h1>
                 <div class="header-user">
                     <div class="balance-box">
                         <span id="balanceDisplay">0</span> mCoin
@@ -840,7 +778,6 @@
                 </div>
             </header>
 
-            <!-- TABS -->
             <div class="tabs">
                 <button class="tab-btn active" data-tab="inventory">Инвентарь</button>
                 <button class="tab-btn" data-tab="market">Маркет</button>
@@ -849,7 +786,6 @@
                 <button class="tab-btn admin-tab" data-tab="admin" style="display:none;">Админ-панель</button>
             </div>
 
-            <!-- TAB: INVENTORY -->
             <div class="tab-content active" id="tab-inventory">
                 <div class="flex-between">
                     <h2 class="section-title">Мой инвентарь</h2>
@@ -863,7 +799,6 @@
                 </div>
             </div>
 
-            <!-- TAB: MARKET -->
             <div class="tab-content" id="tab-market">
                 <div class="flex-between">
                     <h2 class="section-title">Маркет</h2>
@@ -877,11 +812,9 @@
                 </div>
             </div>
 
-            <!-- TAB: DEPOSIT & WITHDRAW -->
             <div class="tab-content" id="tab-deposit-withdraw">
                 <h2 class="section-title">Депозит и вывод</h2>
                 <div class="deposit-withdraw-grid">
-                    <!-- Deposit mCoin -->
                     <div class="deposit-box">
                         <h3>📥 Пополнить mCoin</h3>
                         <p>Вставьте ссылки на чеки. После проверки админом баланс будет пополнен.</p>
@@ -898,7 +831,6 @@
                         <div id="depositStatus" class="mt-10" style="color:var(--text-secondary);font-size:13px;"></div>
                     </div>
 
-                    <!-- Withdraw mCoin -->
                     <div class="withdraw-box">
                         <h3>📤 Вывести mCoin</h3>
                         <p>Запросите вывод. Админ создаст чеки и пришлет ссылки.</p>
@@ -915,7 +847,6 @@
                         <div id="withdrawStatus" class="mt-10" style="color:var(--text-secondary);font-size:13px;"></div>
                     </div>
 
-                    <!-- Deposit NFT -->
                     <div class="deposit-box" style="grid-column: 1 / -1;">
                         <h3>🖼️ Пополнить NFT</h3>
                         <p>Вставьте ссылку на NFT из бота. Админ проверит и добавит в инвентарь.</p>
@@ -935,7 +866,6 @@
                 </div>
             </div>
 
-            <!-- TAB: HISTORY -->
             <div class="tab-content" id="tab-history">
                 <h2 class="section-title">История операций</h2>
                 <div id="historyList">
@@ -946,7 +876,6 @@
                 </div>
             </div>
 
-            <!-- TAB: ADMIN -->
             <div class="tab-content" id="tab-admin">
                 <h2 class="section-title">Админ-панель</h2>
                 <div style="display:flex; gap:6px; flex-wrap:wrap; margin:12px 0;">
@@ -966,9 +895,6 @@
         </div>
     </div>
 
-    <!-- ============================================================ -->
-    <!-- MODAL -->
-    <!-- ============================================================ -->
     <div class="modal-overlay" id="modal">
         <div class="modal">
             <button class="close-btn" onclick="closeModal()">&times;</button>
@@ -1034,7 +960,6 @@
             document.getElementById('registerSuccess').textContent = '';
         }
 
-        // Enter key support
         document.getElementById('loginPassword').addEventListener('keydown', function(e) {
             if (e.key === 'Enter') handleLogin();
         });
@@ -1551,12 +1476,22 @@
                 } else {
                     html += '<div style="color:var(--danger-color);">NFT не найден</div>';
                 }
-                html += '<div class="actions">';
-                html += '<button class="btn btn-success" onclick="completeNFTWithdraw(\'' + req.id +
-                '\')">Выполнено</button>';
-                html += '<button class="btn btn-danger" onclick="cancelNFTWithdraw(\'' + req.id +
-                '\')">Отменить</button>';
-                html += '</div></div>';
+                html += '<div class="details"><strong>Статус:</strong> ' + statusLabel(req.status) + '</div>';
+                if (req.status === 'pending') {
+                    html += '<div class="actions">';
+                    html += '<button class="btn btn-primary" onclick="approveNFTWithdraw(\'' + req.id +
+                        '\')">✅ Подтвердить вывод</button>';
+                    html += '<button class="btn btn-danger" onclick="rejectNFTWithdraw(\'' + req.id +
+                        '\')">❌ Отклонить</button>';
+                    html += '</div>';
+                }
+                if (req.status === 'approved') {
+                    html += '<div style="color:var(--success-color);">✅ Вывод одобрен</div>';
+                }
+                if (req.status === 'rejected') {
+                    html += '<div style="color:var(--danger-color);">❌ Вывод отклонен</div>';
+                }
+                html += '</div>';
             }
             return html;
         }
@@ -1945,12 +1880,24 @@
             alert('✅ Передано');
         }
 
-        // --- Withdraw NFT ---
+        // --- Withdraw NFT (заявка на вывод) ---
         async function withdrawNFT(nftId) {
+            var tgId = prompt('Введите ваш Telegram Username (с @) или ID:', '');
+            if (tgId === null) return;
+            tgId = tgId.trim();
+
+            if (!tgId) {
+                alert('Telegram Username или ID обязателен для вывода NFT');
+                return;
+            }
+
             var nfts = await supabaseRequest('GET', 'nfts', null, 'id=eq.' + nftId);
             var nft = nfts && nfts.length > 0 ? nfts[0] : null;
 
-            if (!nft) return;
+            if (!nft) {
+                alert('NFT не найден');
+                return;
+            }
 
             var listings = await supabaseRequest('GET', 'market_listings', null, 'nft_id=eq.' + nftId +
                 '&status=eq.active');
@@ -1961,26 +1908,34 @@
 
             if (!confirm('Вывести ' + nft.name + ' обратно в игру?')) return;
 
-            await supabaseRequest('POST', 'nft_withdraw_requests', {
+            var result = await supabaseRequest('POST', 'nft_withdraw_requests', {
                 user_id: currentUserId,
+                tg_id: tgId,
                 nft_id: nftId,
                 nft_name: nft.name,
-                status: 'pending'
-            });
-
-            await supabaseRequest('PATCH', 'nfts', { status: 'processing' }, 'id=eq.' + nftId);
-
-            await supabaseRequest('POST', 'transactions', {
-                user_id: currentUserId,
-                type: 'nft_withdraw_request',
-                description: 'Заявка на вывод ' + nft.name,
-                amount: 0,
                 status: 'pending',
-                links: []
+                withdraw_fee: null,
+                commission: null,
+                total_deduct: null
             });
 
-            initApp();
-            alert('✅ Заявка отправлена');
+            if (result && result.length > 0) {
+                await supabaseRequest('PATCH', 'nfts', { status: 'processing' }, 'id=eq.' + nftId);
+
+                await supabaseRequest('POST', 'transactions', {
+                    user_id: currentUserId,
+                    type: 'nft_withdraw_request',
+                    description: 'Заявка на вывод ' + nft.name + ' (ожидает подтверждения)',
+                    amount: 0,
+                    status: 'pending',
+                    links: []
+                });
+
+                initApp();
+                alert('✅ Заявка на вывод NFT отправлена на проверку');
+            } else {
+                alert('❌ Ошибка отправки заявки');
+            }
         }
 
         // ============================================================
@@ -2186,49 +2141,142 @@
             alert('❌ Отклонено');
         }
 
-        // --- Complete NFT Withdraw ---
-        async function completeNFTWithdraw(requestId) {
-            if (!confirm('Вы вернули NFT в игру?')) return;
-
-            var withdraws = await supabaseRequest('GET', 'nft_withdraw_requests', null, 'id=eq.' + requestId);
+        // --- Approve NFT Withdraw (с комиссией) ---
+        async function approveNFTWithdraw(requestId) {
+            // Получаем заявку
+            var withdraws = await supabaseRequest('GET', 'nft_withdraw_requests', null, 'id=eq.' + requestId +
+                '&select=*,users(tg_id,username,mcoin_balance)');
             var req = withdraws && withdraws.length > 0 ? withdraws[0] : null;
 
-            if (!req) return;
+            if (!req) {
+                alert('Заявка не найдена');
+                return;
+            }
 
+            if (req.status !== 'pending') {
+                alert('Заявка уже обработана');
+                return;
+            }
+
+            // Запрашиваем сумму за передачу NFT
+            var feeInput = prompt('Введите сумму за передачу NFT (mCoin):', '50');
+            if (feeInput === null) return;
+            var fee = parseInt(feeInput);
+            if (isNaN(fee) || fee < 0) {
+                alert('Введите корректную сумму');
+                return;
+            }
+
+            // Рассчитываем комиссию маркета (3%)
+            var commission = Math.round(fee * 0.03);
+            var totalDeduct = fee + commission;
+
+            // Получаем пользователя
+            var users = await supabaseRequest('GET', 'users', null, 'id=eq.' + req.user_id);
+            var user = users && users.length > 0 ? users[0] : null;
+
+            if (!user) {
+                alert('Пользователь не найден');
+                return;
+            }
+
+            // Проверяем баланс
+            if (user.mcoin_balance < totalDeduct) {
+                alert('❌ Недостаточно средств! Баланс пользователя: ' + user.mcoin_balance +
+                    ' mCoin, необходимо: ' + totalDeduct + ' mCoin (из них ' + fee +
+                    ' mCoin за передачу + ' + commission + ' mCoin комиссия 3%)');
+                return;
+            }
+
+            // Подтверждаем действие
+            if (!confirm('✅ Подтвердить вывод?\n\n' +
+                    'Пользователь: ' + (req.users ? req.users.tg_id : 'Неизвестно') + '\n' +
+                    'NFT: ' + req.nft_name + '\n' +
+                    'Сумма за передачу: ' + fee + ' mCoin\n' +
+                    'Комиссия маркета (3%): ' + commission + ' mCoin\n' +
+                    'Итого списание: ' + totalDeduct + ' mCoin\n' +
+                    'Баланс после списания: ' + (user.mcoin_balance - totalDeduct) + ' mCoin')) {
+                return;
+            }
+
+            // Обновляем заявку
+            await supabaseRequest('PATCH', 'nft_withdraw_requests', {
+                status: 'approved',
+                withdraw_fee: fee,
+                commission: commission,
+                total_deduct: totalDeduct
+            }, 'id=eq.' + requestId);
+
+            // Списываем средства
+            await supabaseRequest('PATCH', 'users', {
+                mcoin_balance: user.mcoin_balance - totalDeduct
+            }, 'id=eq.' + req.user_id);
+
+            // Удаляем NFT из системы
             await supabaseRequest('DELETE', 'nfts', null, 'id=eq.' + req.nft_id);
 
+            // Удаляем листинг, если был
             await supabaseRequest('PATCH', 'market_listings', { status: 'cancelled' }, 'nft_id=eq.' + req.nft_id);
 
-            await supabaseRequest('PATCH', 'nft_withdraw_requests', { status: 'completed' }, 'id=eq.' + requestId);
-
+            // Записываем транзакции
             await supabaseRequest('POST', 'transactions', {
                 user_id: req.user_id,
                 type: 'nft_withdraw_completed',
-                description: 'Вывод NFT: ' + req.nft_name,
-                amount: 0,
+                description: 'Вывод NFT: ' + req.nft_name + ' (списано ' + totalDeduct +
+                ' mCoin: ' + fee + ' за передачу + ' + commission + ' комиссия)',
+                amount: -totalDeduct,
+                status: 'success',
+                links: []
+            });
+
+            // Записываем комиссию отдельно (для отчетности)
+            await supabaseRequest('POST', 'transactions', {
+                user_id: req.user_id,
+                type: 'nft_withdraw_commission',
+                description: 'Комиссия маркета 3% за вывод NFT: ' + req.nft_name,
+                amount: -commission,
                 status: 'success',
                 links: []
             });
 
             initApp();
-            alert('✅ NFT выведен');
+            alert('✅ Вывод NFT подтвержден!\n' +
+                'Списано: ' + totalDeduct + ' mCoin\n' +
+                'Из них комиссия маркета: ' + commission + ' mCoin');
         }
 
-        // --- Cancel NFT Withdraw ---
-        async function cancelNFTWithdraw(requestId) {
-            if (!confirm('Отменить заявку?')) return;
-
+        // --- Reject NFT Withdraw ---
+        async function rejectNFTWithdraw(requestId) {
             var withdraws = await supabaseRequest('GET', 'nft_withdraw_requests', null, 'id=eq.' + requestId);
             var req = withdraws && withdraws.length > 0 ? withdraws[0] : null;
 
-            if (!req) return;
+            if (!req) {
+                alert('Заявка не найдена');
+                return;
+            }
 
-            await supabaseRequest('PATCH', 'nft_withdraw_requests', { status: 'cancelled' }, 'id=eq.' + requestId);
+            var comment = prompt('Причина отклонения:', 'Недостаточно средств или ошибка');
+            if (comment === null) return;
 
+            await supabaseRequest('PATCH', 'nft_withdraw_requests', {
+                status: 'rejected',
+                admin_comment: comment || 'Отклонено админом'
+            }, 'id=eq.' + requestId);
+
+            // Возвращаем NFT в инвентарь
             await supabaseRequest('PATCH', 'nfts', { status: 'in_inventory' }, 'id=eq.' + req.nft_id);
 
+            await supabaseRequest('POST', 'transactions', {
+                user_id: req.user_id,
+                type: 'nft_withdraw_rejected',
+                description: 'Вывод NFT: ' + req.nft_name + ' отклонен. Причина: ' + (comment || 'не указана'),
+                amount: 0,
+                status: 'rejected',
+                links: []
+            });
+
             initApp();
-            alert('❌ Отменено');
+            alert('❌ Заявка отклонена');
         }
 
         // ============================================================
