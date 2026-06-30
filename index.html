@@ -1,0 +1,2141 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GMPepka</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0b0e1a;
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 16px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1a1f35, #2a1f3d);
+            padding: 18px 24px;
+            border-radius: 14px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            border: 1px solid #3a2f5a;
+        }
+        .header h1 {
+            font-size: 22px;
+            background: linear-gradient(90deg, #f7971e, #ffd200);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .header-user {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+        .balance-box {
+            background: #1e2642;
+            padding: 6px 18px;
+            border-radius: 30px;
+            border: 1px solid #f7971e;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .balance-box span {
+            color: #ffd700;
+            font-weight: bold;
+            font-size: 17px;
+        }
+        .role-badge {
+            background: #2a1f3d;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            border: 1px solid #6a4f8a;
+        }
+        .role-badge.admin {
+            border-color: #f7971e;
+            color: #ffd700;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+            background: #141b2b;
+            padding: 8px;
+            border-radius: 12px;
+        }
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: #888;
+            padding: 8px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        .tab-btn:hover {
+            background: #1e2642;
+            color: #fff;
+        }
+        .tab-btn.active {
+            background: #2a1f3d;
+            color: #ffd700;
+            box-shadow: 0 0 20px rgba(247, 151, 30, 0.1);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.25s ease;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .nft-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 16px;
+        }
+        .nft-card {
+            background: #141b2b;
+            border-radius: 12px;
+            padding: 14px;
+            border: 1px solid #2a2f4a;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        .nft-card:hover {
+            border-color: #f7971e;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 24px rgba(247, 151, 30, 0.08);
+        }
+        .nft-card .image {
+            width: 100%;
+            aspect-ratio: 1;
+            background: #1e2642;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 56px;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+        .nft-card .image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .nft-card .name {
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: 3px;
+        }
+        .nft-card .nft-id {
+            font-size: 10px;
+            color: #666;
+            word-break: break-all;
+            margin-bottom: 5px;
+        }
+        .nft-card .rarity {
+            font-size: 11px;
+            padding: 2px 10px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+        .rarity.common {
+            background: #2a3a4a;
+            color: #8ab4c8;
+        }
+        .rarity.rare {
+            background: #2a3a6a;
+            color: #6a9aff;
+        }
+        .rarity.epic {
+            background: #4a2a6a;
+            color: #b87aff;
+        }
+        .rarity.legendary {
+            background: #6a4a1a;
+            color: #ffb347;
+        }
+        .nft-card .price {
+            color: #ffd700;
+            font-weight: bold;
+            font-size: 17px;
+            margin: 6px 0;
+        }
+        .nft-card .status-badge {
+            font-size: 10px;
+            padding: 2px 10px;
+            border-radius: 20px;
+            background: #2a2f4a;
+            color: #888;
+            display: inline-block;
+        }
+        .status-badge.processing {
+            background: #4a3a1a;
+            color: #ffb347;
+        }
+        .status-badge.in_inventory {
+            background: #1a3a2a;
+            color: #4ae08a;
+        }
+        .status-badge.listed {
+            background: #1a2a4a;
+            color: #4a8aff;
+        }
+
+        .btn {
+            padding: 6px 14px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-block;
+            margin: 3px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #f7971e, #ffd200);
+            color: #0b0e1a;
+        }
+        .btn-primary:hover {
+            transform: scale(1.04);
+            box-shadow: 0 4px 16px rgba(247, 151, 30, 0.25);
+        }
+        .btn-danger {
+            background: #6a2a2a;
+            color: #ff6a6a;
+        }
+        .btn-danger:hover {
+            background: #8a2a2a;
+        }
+        .btn-success {
+            background: #1a5a2a;
+            color: #4ae08a;
+        }
+        .btn-success:hover {
+            background: #2a7a3a;
+        }
+        .btn-secondary {
+            background: #2a2f4a;
+            color: #aaa;
+        }
+        .btn-secondary:hover {
+            background: #3a3f5a;
+            color: #fff;
+        }
+        .btn-sm {
+            padding: 4px 10px;
+            font-size: 10px;
+        }
+        .btn-block {
+            display: block;
+            width: 100%;
+            margin: 5px 0;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px 14px;
+            background: #141b2b;
+            border: 1px solid #2a2f4a;
+            border-radius: 8px;
+            color: #e0e0e0;
+            font-size: 14px;
+            transition: border 0.3s;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #f7971e;
+        }
+        .form-group textarea {
+            min-height: 70px;
+            resize: vertical;
+            font-family: inherit;
+        }
+        .form-group .hint {
+            font-size: 11px;
+            color: #666;
+            margin-top: 3px;
+        }
+
+        .deposit-withdraw-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+        .deposit-box,
+        .withdraw-box {
+            background: #141b2b;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #2a2f4a;
+        }
+        .deposit-box h3,
+        .withdraw-box h3 {
+            color: #ffd700;
+            margin-bottom: 14px;
+            font-size: 18px;
+        }
+
+        .admin-request {
+            background: #141b2b;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 14px;
+            border: 1px solid #2a2f4a;
+        }
+        .admin-request .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .admin-request .user {
+            color: #ffd700;
+            font-weight: 600;
+        }
+        .admin-request .details {
+            color: #aaa;
+            font-size: 13px;
+            margin: 6px 0;
+        }
+        .admin-request .links {
+            background: #0b0e1a;
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            word-break: break-all;
+            margin: 6px 0;
+        }
+        .admin-request .links a {
+            color: #6a9aff;
+            text-decoration: none;
+            display: inline-block;
+            margin: 2px 0;
+        }
+        .admin-request .links a:hover {
+            text-decoration: underline;
+        }
+        .admin-request .nft-preview {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 8px 0;
+            background: #0b0e1a;
+            padding: 8px;
+            border-radius: 8px;
+        }
+        .admin-request .nft-preview img {
+            width: 50px;
+            height: 50px;
+            border-radius: 6px;
+            object-fit: cover;
+            background: #1e2642;
+        }
+        .admin-request .nft-preview .info {
+            font-size: 13px;
+        }
+        .admin-request .actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px;
+            background: #141b2b;
+            border-radius: 8px;
+            margin-bottom: 6px;
+            border-left: 3px solid #2a2f4a;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .history-item .type {
+            font-weight: 500;
+        }
+        .history-item .amount {
+            color: #ffd700;
+            font-weight: 600;
+        }
+        .history-item .date {
+            color: #666;
+            font-size: 11px;
+        }
+        .history-item .status {
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 20px;
+        }
+        .history-item .status.success {
+            background: #1a3a2a;
+            color: #4ae08a;
+        }
+        .history-item .status.pending {
+            background: #3a3a1a;
+            color: #ffb347;
+        }
+        .history-item .status.rejected {
+            background: #3a1a1a;
+            color: #ff6a6a;
+        }
+        .history-item .status.ready {
+            background: #1a2a4a;
+            color: #4a8aff;
+        }
+        .history-item .links-list {
+            width: 100%;
+            background: #0b0e1a;
+            padding: 6px 10px;
+            border-radius: 6px;
+            margin-top: 4px;
+            font-size: 11px;
+        }
+        .history-item .links-list a {
+            color: #6a9aff;
+            text-decoration: none;
+            display: inline-block;
+            margin: 2px 6px 2px 0;
+        }
+        .history-item .links-list a:hover {
+            text-decoration: underline;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal {
+            background: #1a1f35;
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 460px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid #3a2f5a;
+        }
+        .modal h2 {
+            margin-bottom: 16px;
+            color: #ffd700;
+            font-size: 20px;
+        }
+        .modal .close-btn {
+            float: right;
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 22px;
+            cursor: pointer;
+        }
+        .modal .close-btn:hover {
+            color: #fff;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 16px;
+            color: #666;
+        }
+        .empty-state .icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+        .mt-10 {
+            margin-top: 10px;
+        }
+        .mb-10 {
+            margin-bottom: 10px;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        .spinner {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 3px solid #2a2f4a;
+            border-top-color: #f7971e;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .login-page {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .login-box {
+            background: #141b2b;
+            padding: 40px;
+            border-radius: 16px;
+            border: 1px solid #2a2f4a;
+            max-width: 400px;
+            width: 100%;
+        }
+        .login-box h1 {
+            text-align: center;
+            margin-bottom: 4px;
+            background: linear-gradient(90deg, #f7971e, #ffd200);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .login-box .subtitle {
+            text-align: center;
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        .login-box .error {
+            color: #ff6a6a;
+            font-size: 13px;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        .login-box .success {
+            color: #4ae08a;
+            font-size: 13px;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        .login-box .switch-link {
+            color: #6a9aff;
+            cursor: pointer;
+            text-align: center;
+            display: block;
+            margin-top: 12px;
+            font-size: 13px;
+        }
+        .login-box .switch-link:hover {
+            text-decoration: underline;
+        }
+        .login-box .divider {
+            border: none;
+            border-top: 1px solid #2a2f4a;
+            margin: 16px 0;
+        }
+
+        .app-hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 768px) {
+            .deposit-withdraw-grid {
+                grid-template-columns: 1fr;
+            }
+            .login-box {
+                padding: 24px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .header {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+                padding: 14px 16px;
+            }
+            .header-user {
+                justify-content: center;
+            }
+            .nft-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            }
+            .tabs {
+                justify-content: center;
+            }
+            .tab-btn {
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+            .modal {
+                padding: 16px;
+                margin: 8px;
+            }
+            .login-box {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loginPage" class="login-page">
+        <div class="login-box">
+            <h1>GMPepka</h1>
+            <div id="loginForm">
+                <p class="subtitle">Вход в маркет</p>
+                <div id="loginError" class="error"></div>
+                <div id="loginSuccess" class="success"></div>
+                <div class="form-group">
+                    <label>Имя пользователя</label>
+                    <input type="text" id="loginUsername" placeholder="user1" />
+                </div>
+                <div class="form-group">
+                    <label>Пароль</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" />
+                </div>
+                <button class="btn btn-primary btn-block" onclick="handleLogin()">Войти</button>
+                <span class="switch-link" onclick="showRegister()">Нет аккаунта? Зарегистрироваться</span>
+            </div>
+            <div id="registerForm" style="display:none;">
+                <p class="subtitle">Регистрация</p>
+                <div id="registerError" class="error"></div>
+                <div id="registerSuccess" class="success"></div>
+                <div class="form-group">
+                    <label>Имя пользователя</label>
+                    <input type="text" id="registerUsername" placeholder="Придумайте логин" />
+                </div>
+                <div class="form-group">
+                    <label>Пароль</label>
+                    <input type="password" id="registerPassword" placeholder="Минимум 6 символов" />
+                </div>
+                <button class="btn btn-primary btn-block" onclick="handleRegister()">Зарегистрироваться</button>
+                <span class="switch-link" onclick="showLogin()">Уже есть аккаунт? Войти</span>
+            </div>
+            <hr class="divider" />
+            <p style="color:#666;font-size:12px;text-align:center;">
+                Демо: user1 / 123, user2 / 123, admin / admin
+            </p>
+        </div>
+    </div>
+
+    <div id="app" class="app-hidden">
+        <div class="container">
+            <header class="header">
+                <h1>GMPepka</h1>
+                <div class="header-user">
+                    <div class="balance-box">
+                        <span id="balanceDisplay">0</span> mCoin
+                    </div>
+                    <span class="role-badge" id="roleBadge">Пользователь</span>
+                    <span id="userDisplay" style="color:#888;font-size:13px;"></span>
+                    <button class="btn btn-secondary btn-sm" onclick="logout()">Выйти</button>
+                </div>
+            </header>
+
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="inventory">Инвентарь</button>
+                <button class="tab-btn" data-tab="market">Маркет</button>
+                <button class="tab-btn" data-tab="deposit-withdraw">Депозит и вывод</button>
+                <button class="tab-btn" data-tab="history">История</button>
+                <button class="tab-btn admin-tab" data-tab="admin" style="display:none;">Админ-панель</button>
+            </div>
+
+            <div class="tab-content active" id="tab-inventory">
+                <div class="flex-between">
+                    <h2>Мой инвентарь</h2>
+                    <span style="color:#888;">Всего: <strong id="inventoryCount">0</strong></span>
+                </div>
+                <div id="inventoryGrid" class="nft-grid">
+                    <div class="loading" style="grid-column:1/-1;">
+                        <div class="spinner"></div>
+                        <p style="margin-top:12px;">Загрузка...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="tab-market">
+                <div class="flex-between">
+                    <h2>Маркет</h2>
+                    <span style="color:#888;">На продаже: <strong id="marketCount">0</strong></span>
+                </div>
+                <div id="marketGrid" class="nft-grid">
+                    <div class="loading" style="grid-column:1/-1;">
+                        <div class="spinner"></div>
+                        <p style="margin-top:12px;">Загрузка...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="tab-deposit-withdraw">
+                <h2>Депозит и вывод</h2>
+                <div class="deposit-withdraw-grid">
+                    <!-- Пополнить mCoin -->
+                    <div class="deposit-box">
+                        <h3>📥 Пополнить mCoin</h3>
+                        <p style="color:#888; margin-bottom:14px; font-size:13px;">
+                            Вставьте ссылки на чеки. После проверки админом баланс будет пополнен.
+                        </p>
+                        <div class="form-group">
+                            <label>Telegram Username или ID</label>
+                            <input type="text" id="depositTgId" placeholder="@username или 123456789" />
+                            <div class="hint">Укажите ваш Telegram username (с @) или числовой ID</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Ссылки на чеки (каждая с новой строки)</label>
+                            <textarea id="depositLinks" placeholder="https://t.me/gminesbot?start=claim_xxx"></textarea>
+                        </div>
+                        <button class="btn btn-primary btn-block" onclick="createDepositRequest()">Отправить заявку</button>
+                        <div id="depositStatus" class="mt-10" style="color:#888;"></div>
+                    </div>
+
+                    <!-- Вывести mCoin -->
+                    <div class="withdraw-box">
+                        <h3>📤 Вывести mCoin</h3>
+                        <p style="color:#888; margin-bottom:14px; font-size:13px;">
+                            Запросите вывод. Админ создаст чеки и пришлет ссылки.
+                        </p>
+                        <div class="form-group">
+                            <label>Telegram Username или ID</label>
+                            <input type="text" id="withdrawTgId" placeholder="@username или 123456789" />
+                            <div class="hint">Укажите ваш Telegram username (с @) или числовой ID</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Сумма (mCoin)</label>
+                            <input type="number" id="withdrawAmount" placeholder="100" min="1" />
+                        </div>
+                        <button class="btn btn-primary btn-block" onclick="createWithdrawRequest()">Отправить заявку</button>
+                        <div id="withdrawStatus" class="mt-10" style="color:#888;"></div>
+                    </div>
+
+                    <!-- Пополнить NFT -->
+                    <div class="deposit-box" style="grid-column: 1 / -1;">
+                        <h3>🖼️ Пополнить NFT</h3>
+                        <p style="color:#888; margin-bottom:14px; font-size:13px;">
+                            Вставьте ссылку на NFT из бота. Админ проверит и добавит в инвентарь.
+                        </p>
+                        <div class="form-group">
+                            <label>Telegram Username или ID</label>
+                            <input type="text" id="nftDepositTgId" placeholder="@username или 123456789" />
+                            <div class="hint">Укажите ваш Telegram username (с @) или числовой ID</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Ссылка на NFT</label>
+                            <input type="text" id="nftDepositLink" placeholder="https://t.me/gminesbot?start=gift_abc123" />
+                            <div class="hint">Формат: https://t.me/gminesbot?start=gift_ID</div>
+                        </div>
+                        <button class="btn btn-primary btn-block" onclick="createNFTDepositRequest()">Отправить заявку</button>
+                        <div id="nftDepositStatus" class="mt-10" style="color:#888;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="tab-history">
+                <h2>История операций</h2>
+                <div id="historyList">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p style="margin-top:12px;">Загрузка...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="tab-admin">
+                <h2>Админ-панель</h2>
+                <div style="display:flex; gap:8px; flex-wrap:wrap; margin:14px 0;">
+                    <button class="btn btn-secondary btn-sm" onclick="showAdminTab('deposits')" id="subtab-deposits-btn">Пополнения mCoin</button>
+                    <button class="btn btn-secondary btn-sm" onclick="showAdminTab('withdraws')" id="subtab-withdraws-btn">Выводы mCoin</button>
+                    <button class="btn btn-secondary btn-sm" onclick="showAdminTab('nft_deposits')" id="subtab-nft_deposits-btn">Пополнения NFT</button>
+                    <button class="btn btn-secondary btn-sm" onclick="showAdminTab('nft_withdraws')" id="subtab-nft_withdraws-btn">Выводы NFT</button>
+                </div>
+                <div id="adminContent">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p style="margin-top:12px;">Загрузка...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal">
+        <div class="modal">
+            <button class="close-btn" onclick="closeModal()">&times;</button>
+            <h2 id="modalTitle">Заголовок</h2>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        // SUPABASE REST API
+        // ============================================================
+        var SUPABASE_URL = 'https://hkrzyardmkuhjhrgarjs.supabase.co';
+        var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhrcnp5YXJkbWt1aGpocmdhcmpzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI4MDc0NzYsImV4cCI6MjA5ODM4MzQ3Nn0.UzFHjQ5wpVsVBQh3O6uu6pa06rgBu36MIdZ_C1hBcxw';
+
+        var headers = {
+            'apikey': SUPABASE_KEY,
+            'Authorization': 'Bearer ' + SUPABASE_KEY,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=representation'
+        };
+
+        function supabaseRequest(method, table, data, params) {
+            var url = SUPABASE_URL + '/rest/v1/' + table;
+            if (params) {
+                url += '?' + params;
+            }
+            return fetch(url, {
+                method: method,
+                headers: headers,
+                body: data ? JSON.stringify(data) : undefined
+            }).then(function(res) {
+                return res.json();
+            });
+        }
+
+        // ============================================================
+        // СОСТОЯНИЕ
+        // ============================================================
+        var currentUser = null;
+        var currentUserId = null;
+        var isAdminUser = false;
+        var _adminTab = 'deposits';
+
+        // ============================================================
+        // ПЕРЕКЛЮЧЕНИЕ МЕЖДУ ВХОДОМ И РЕГИСТРАЦИЕЙ
+        // ============================================================
+        function showRegister() {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'block';
+            document.getElementById('loginError').textContent = '';
+            document.getElementById('loginSuccess').textContent = '';
+            document.getElementById('registerError').textContent = '';
+            document.getElementById('registerSuccess').textContent = '';
+        }
+
+        function showLogin() {
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('registerForm').style.display = 'none';
+            document.getElementById('loginError').textContent = '';
+            document.getElementById('loginSuccess').textContent = '';
+            document.getElementById('registerError').textContent = '';
+            document.getElementById('registerSuccess').textContent = '';
+        }
+
+        // Enter на формах
+        document.getElementById('loginPassword').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') handleLogin();
+        });
+        document.getElementById('loginUsername').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') handleLogin();
+        });
+        document.getElementById('registerPassword').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') handleRegister();
+        });
+        document.getElementById('registerUsername').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') handleRegister();
+        });
+
+        // ============================================================
+        // ВХОД
+        // ============================================================
+        async function handleLogin() {
+            var username = document.getElementById('loginUsername').value.trim();
+            var password = document.getElementById('loginPassword').value.trim();
+            var errorEl = document.getElementById('loginError');
+
+            if (!username || !password) {
+                errorEl.textContent = 'Введите имя пользователя и пароль';
+                return;
+            }
+
+            try {
+                var users = await supabaseRequest('GET', 'users', null, 'tg_id=eq.' + username);
+                var user = users && users.length > 0 ? users[0] : null;
+
+                if (!user) {
+                    errorEl.textContent = 'Пользователь не найден';
+                    return;
+                }
+
+                if (user.password !== password) {
+                    errorEl.textContent = 'Неверный пароль';
+                    return;
+                }
+
+                errorEl.textContent = '';
+                currentUser = user.tg_id;
+                currentUserId = user.id;
+                isAdminUser = user.is_admin || false;
+
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('app').classList.remove('app-hidden');
+                document.getElementById('userDisplay').textContent = '@' + currentUser;
+
+                initApp();
+
+            } catch (err) {
+                errorEl.textContent = 'Ошибка подключения к серверу';
+                console.error(err);
+            }
+        }
+
+        // ============================================================
+        // РЕГИСТРАЦИЯ
+        // ============================================================
+        async function handleRegister() {
+            var username = document.getElementById('registerUsername').value.trim();
+            var password = document.getElementById('registerPassword').value.trim();
+            var errorEl = document.getElementById('registerError');
+            var successEl = document.getElementById('registerSuccess');
+
+            if (!username || !password) {
+                errorEl.textContent = 'Заполните все поля';
+                return;
+            }
+
+            if (password.length < 6) {
+                errorEl.textContent = 'Пароль должен быть минимум 6 символов';
+                return;
+            }
+
+            if (username.length < 3) {
+                errorEl.textContent = 'Имя пользователя минимум 3 символа';
+                return;
+            }
+
+            errorEl.textContent = '';
+            successEl.textContent = '';
+
+            try {
+                var users = await supabaseRequest('GET', 'users', null, 'tg_id=eq.' + username);
+
+                if (users && users.length > 0) {
+                    errorEl.textContent = 'Это имя пользователя уже занято';
+                    return;
+                }
+
+                var newUser = await supabaseRequest('POST', 'users', {
+                    tg_id: username,
+                    username: username,
+                    first_name: username,
+                    password: password,
+                    mcoin_balance: 1000,
+                    is_admin: false
+                });
+
+                if (newUser && newUser.length > 0) {
+                    successEl.textContent = 'Регистрация успешна! Теперь войдите.';
+                    errorEl.textContent = '';
+
+                    document.getElementById('registerUsername').value = '';
+                    document.getElementById('registerPassword').value = '';
+
+                    setTimeout(function() {
+                        showLogin();
+                        document.getElementById('loginUsername').value = username;
+                        document.getElementById('loginSuccess').textContent =
+                            'Аккаунт создан! Введите пароль для входа.';
+                    }, 1500);
+                } else {
+                    errorEl.textContent = 'Ошибка регистрации';
+                }
+
+            } catch (err) {
+                errorEl.textContent = 'Ошибка подключения к серверу';
+                console.error(err);
+            }
+        }
+
+        // ============================================================
+        // ВЫХОД
+        // ============================================================
+        function logout() {
+            currentUser = null;
+            currentUserId = null;
+            isAdminUser = false;
+            document.getElementById('app').classList.add('app-hidden');
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('loginPassword').value = '';
+            document.getElementById('loginError').textContent = '';
+            document.getElementById('loginSuccess').textContent = '';
+        }
+
+        // ============================================================
+        // ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+        // ============================================================
+        function getImageUrl(giftId) {
+            return 'https://img-api.gmines.fun/picGift?giftUid=' + giftId;
+        }
+
+        function parseGiftId(link) {
+            var match = link.match(/start=gift_([a-zA-Z0-9_]+)/);
+            return match ? match[1] : null;
+        }
+
+        function isValidNFTLink(link) {
+            return link.indexOf('t.me/gminesbot') !== -1 && link.indexOf('start=gift_') !== -1;
+        }
+
+        function formatDate(ts) {
+            return new Date(ts).toLocaleString('ru-RU');
+        }
+
+        function statusLabel(status) {
+            var map = {
+                'in_inventory': 'В инвентаре',
+                'listed': 'На продаже',
+                'processing': 'Обработка',
+                'pending': 'Ожидает',
+                'approved': 'Одобрено',
+                'rejected': 'Отклонено',
+                'ready': 'Готово',
+                'completed': 'Завершено',
+                'cancelled': 'Отменено',
+                'success': 'Успешно',
+            };
+            return map[status] || status;
+        }
+
+        // ============================================================
+        // ИНИЦИАЛИЗАЦИЯ ПРИЛОЖЕНИЯ
+        // ============================================================
+        async function initApp() {
+            var users = await supabaseRequest('GET', 'users', null, 'id=eq.' + currentUserId);
+            var user = users && users.length > 0 ? users[0] : null;
+
+            if (!user) {
+                alert('Ошибка загрузки пользователя');
+                return;
+            }
+
+            currentUser = user.tg_id;
+            isAdminUser = user.is_admin || false;
+
+            updateHeader(user);
+            await loadInventory(user.id);
+            await loadMarket();
+            await loadHistory(user.id);
+            await loadAdmin(user.id);
+
+            var adminTab = document.querySelector('.admin-tab');
+            if (adminTab) {
+                adminTab.style.display = isAdminUser ? 'inline-block' : 'none';
+            }
+        }
+
+        function updateHeader(user) {
+            document.getElementById('balanceDisplay').textContent = user.mcoin_balance || 0;
+            var roleText = isAdminUser ? 'Админ' : 'Пользователь';
+            var badge = document.getElementById('roleBadge');
+            badge.textContent = roleText;
+            badge.className = 'role-badge' + (isAdminUser ? ' admin' : '');
+        }
+
+        // ============================================================
+        // ЗАГРУЗКА ИНВЕНТАРЯ
+        // ============================================================
+        async function loadInventory(userId) {
+            var nfts = await supabaseRequest('GET', 'nfts', null, 'owner_id=eq.' + userId);
+
+            var grid = document.getElementById('inventoryGrid');
+
+            if (!nfts || nfts.length === 0) {
+                grid.innerHTML =
+                    '<div class="empty-state" style="grid-column:1/-1;"><div class="icon">📭</div><p>Нет NFT</p></div>';
+                document.getElementById('inventoryCount').textContent = '0';
+                return;
+            }
+
+            var html = '';
+            for (var i = 0; i < nfts.length; i++) {
+                var nft = nfts[i];
+                var imgUrl = getImageUrl(nft.gift_id);
+
+                var listings = await supabaseRequest('GET', 'market_listings', null, 'nft_id=eq.' + nft.id +
+                    '&status=eq.active');
+                var listing = listings && listings.length > 0 ? listings[0] : null;
+                var isListed = !!listing;
+
+                html += '<div class="nft-card">';
+                html += '<div class="image"><img src="' + imgUrl + '" alt="' + nft.name + '" /></div>';
+                html += '<div class="name">' + nft.name + '</div>';
+                html += '<div class="nft-id">ID: ' + nft.gift_id + '</div>';
+                html += '<div class="rarity ' + nft.rarity + '">' + nft.rarity.toUpperCase() + '</div>';
+                html += '<div class="status-badge ' + (isListed ? 'listed' : 'in_inventory') + '">' + (isListed ?
+                    'На продаже' : 'В инвентаре') + '</div>';
+                if (isListed) {
+                    html += '<div class="price">' + listing.price + ' mCoin</div>';
+                }
+                html += '<div style="margin-top:8px; display:flex; flex-wrap:wrap; gap:4px; justify-content:center;">';
+                if (!isListed) {
+                    html += '<button class="btn btn-primary btn-sm" onclick="openSell(\'' + nft.id + '\')">Продать</button>';
+                } else {
+                    html += '<button class="btn btn-danger btn-sm" onclick="cancelSell(\'' + nft.id + '\')">Снять</button>';
+                }
+                html += '<button class="btn btn-secondary btn-sm" onclick="openTransfer(\'' + nft.id +
+                '\')">Передать</button>';
+                html += '<button class="btn btn-secondary btn-sm" onclick="withdrawNFT(\'' + nft.id +
+                '\')">Вывести</button>';
+                html += '</div></div>';
+            }
+            grid.innerHTML = html;
+            document.getElementById('inventoryCount').textContent = nfts.length;
+        }
+
+        // ============================================================
+        // ЗАГРУЗКА МАРКЕТА
+        // ============================================================
+        async function loadMarket() {
+            var listings = await supabaseRequest('GET', 'market_listings', null, 'status=eq.active&select=*,nfts(*)');
+
+            var grid = document.getElementById('marketGrid');
+
+            if (!listings || listings.length === 0) {
+                grid.innerHTML =
+                    '<div class="empty-state" style="grid-column:1/-1;"><div class="icon">🏪</div><p>Пусто</p></div>';
+                document.getElementById('marketCount').textContent = '0';
+                return;
+            }
+
+            var html = '';
+            for (var i = 0; i < listings.length; i++) {
+                var listing = listings[i];
+                var nft = listing.nfts;
+                if (!nft) continue;
+                var isOwn = nft.owner_id === currentUserId;
+                var imgUrl = getImageUrl(nft.gift_id);
+
+                html += '<div class="nft-card">';
+                html += '<div class="image"><img src="' + imgUrl + '" alt="' + nft.name + '" /></div>';
+                html += '<div class="name">' + nft.name + '</div>';
+                html += '<div class="nft-id">ID: ' + nft.gift_id + '</div>';
+                html += '<div class="rarity ' + nft.rarity + '">' + nft.rarity.toUpperCase() + '</div>';
+                html += '<div class="price">' + listing.price + ' mCoin</div>';
+                html += '<div style="font-size:11px; color:#888;">Продавец: ' + listing.seller_id + '</div>';
+                if (!isOwn) {
+                    html += '<button class="btn btn-primary btn-block" onclick="buyNFT(\'' + listing.id +
+                    '\')">Купить</button>';
+                } else {
+                    html += '<button class="btn btn-secondary btn-sm" style="width:100%;">Ваш NFT</button>';
+                }
+                html += '</div>';
+            }
+            grid.innerHTML = html;
+            document.getElementById('marketCount').textContent = listings.length;
+        }
+
+        // ============================================================
+        // ЗАГРУЗКА ИСТОРИИ
+        // ============================================================
+        async function loadHistory(userId) {
+            var transactions = await supabaseRequest('GET', 'transactions', null, 'user_id=eq.' + userId +
+                '&order=created_at.desc');
+
+            var container = document.getElementById('historyList');
+
+            if (!transactions || transactions.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="icon">📜</div><p>История пуста</p></div>';
+                return;
+            }
+
+            var html = '';
+            for (var i = 0; i < transactions.length; i++) {
+                var tx = transactions[i];
+                html += '<div class="history-item">';
+                html += '<div><div class="type">' + tx.description + '</div><div class="date">' + formatDate(tx
+                    .created_at) + '</div></div>';
+                html += '<div style="text-align:right;">';
+                if (tx.amount) {
+                    html += '<div class="amount">' + (tx.amount > 0 ? '+' : '') + tx.amount + ' mCoin</div>';
+                }
+                html += '<span class="status ' + tx.status + '">' + statusLabel(tx.status) + '</span>';
+                html += '</div>';
+                if (tx.links && tx.links.length > 0) {
+                    html += '<div class="links-list"><strong>Чеки:</strong> ';
+                    for (var j = 0; j < tx.links.length; j++) {
+                        html += '<a href="' + tx.links[j] + '" target="_blank">' + tx.links[j] + '</a>';
+                    }
+                    html += '</div>';
+                }
+                html += '</div>';
+            }
+            container.innerHTML = html;
+        }
+
+        // ============================================================
+        // АДМИН-ПАНЕЛЬ
+        // ============================================================
+        async function loadAdmin(userId) {
+            if (!isAdminUser) return;
+            await showAdminTab(_adminTab);
+        }
+
+        async function showAdminTab(tab) {
+            _adminTab = tab;
+            var container = document.getElementById('adminContent');
+
+            var btns = document.querySelectorAll('[id^="subtab-"]');
+            for (var i = 0; i < btns.length; i++) {
+                btns[i].style.background = '#2a2f4a';
+                btns[i].style.color = '#aaa';
+            }
+            var activeBtn = document.getElementById('subtab-' + tab + '-btn');
+            if (activeBtn) {
+                activeBtn.style.background = '#2a1f3d';
+                activeBtn.style.color = '#ffd700';
+            }
+
+            var html = '';
+            if (tab === 'deposits') html = await renderDepositsAdmin();
+            else if (tab === 'withdraws') html = await renderWithdrawsAdmin();
+            else if (tab === 'nft_deposits') html = await renderNFTDepositsAdmin();
+            else if (tab === 'nft_withdraws') html = await renderNFTWithdrawsAdmin();
+            else html = '<p>Выберите раздел</p>';
+
+            container.innerHTML = html;
+        }
+
+        async function renderDepositsAdmin() {
+            var deposits = await supabaseRequest('GET', 'deposit_requests', null,
+                'status=eq.pending&select=*,users(tg_id,username)&order=created_at.desc');
+
+            if (!deposits || deposits.length === 0) {
+                return '<div class="empty-state"><div class="icon">📭</div><p>Нет активных заявок</p></div>';
+            }
+
+            var html = '';
+            for (var i = 0; i < deposits.length; i++) {
+                var req = deposits[i];
+                html += '<div class="admin-request">';
+                html += '<div class="header-row"><div><span class="user">' + (req.users ? req.users.tg_id : 'Неизвестно') +
+                    '</span> <span style="color:#888;margin-left:8px;">' + statusLabel(req.status) + '</span></div>';
+                html += '<span style="color:#666;font-size:11px;">' + formatDate(req.created_at) + '</span></div>';
+                html += '<div class="details"><strong>Telegram:</strong> ' + (req.tg_id || 'не указан') + '</div>';
+                html += '<div class="details"><strong>Чеки:</strong></div><div class="links">';
+                for (var j = 0; j < req.links.length; j++) {
+                    html += '<div><a href="' + req.links[j] + '" target="_blank">' + req.links[j] + '</a></div>';
+                }
+                html += '</div>';
+                html += '<div class="actions">';
+                html += '<button class="btn btn-success" onclick="approveDeposit(\'' + req.id +
+                '\')">Подтвердить</button>';
+                html += '<button class="btn btn-danger" onclick="rejectDeposit(\'' + req.id +
+                '\')">Отклонить</button>';
+                html += '</div></div>';
+            }
+            return html;
+        }
+
+        async function renderWithdrawsAdmin() {
+            var withdraws = await supabaseRequest('GET', 'withdraw_requests', null,
+                'status=in.(pending,ready)&select=*,users(tg_id,username)&order=created_at.desc');
+
+            if (!withdraws || withdraws.length === 0) {
+                return '<div class="empty-state"><div class="icon">📭</div><p>Нет активных заявок</p></div>';
+            }
+
+            var html = '';
+            for (var i = 0; i < withdraws.length; i++) {
+                var req = withdraws[i];
+                html += '<div class="admin-request">';
+                html += '<div class="header-row"><div><span class="user">' + (req.users ? req.users.tg_id : 'Неизвестно') +
+                    '</span> <span style="color:#888;margin-left:8px;">' + statusLabel(req.status) + '</span></div>';
+                html += '<span style="color:#666;font-size:11px;">' + formatDate(req.created_at) + '</span></div>';
+                html += '<div class="details"><strong>Telegram:</strong> ' + (req.tg_id || 'не указан') + '</div>';
+                html += '<div class="details"><strong>Сумма:</strong> ' + req.amount + ' mCoin</div>';
+                if (req.links && req.links.length > 0) {
+                    html += '<div class="details"><strong>Чеки:</strong></div><div class="links">';
+                    for (var j = 0; j < req.links.length; j++) {
+                        html += '<div><a href="' + req.links[j] + '" target="_blank">' + req.links[j] + '</a></div>';
+                    }
+                    html += '</div>';
+                }
+                if (req.status === 'pending') {
+                    html += '<div class="actions">';
+                    html += '<button class="btn btn-primary" onclick="openChecksModal(\'' + req.id +
+                        '\')">Вставить чеки</button>';
+                    html += '<button class="btn btn-danger" onclick="cancelWithdraw(\'' + req.id +
+                        '\')">Отменить</button>';
+                    html += '</div>';
+                }
+                if (req.status === 'ready') {
+                    html += '<div class="actions">';
+                    html += '<button class="btn btn-success" onclick="completeWithdraw(\'' + req.id +
+                        '\')">Выполнено</button>';
+                    html += '</div>';
+                }
+                html += '</div>';
+            }
+            return html;
+        }
+
+        async function renderNFTDepositsAdmin() {
+            var deposits = await supabaseRequest('GET', 'nft_deposit_requests', null,
+                'status=eq.pending&select=*,users(tg_id,username)&order=created_at.desc');
+
+            if (!deposits || deposits.length === 0) {
+                return '<div class="empty-state"><div class="icon">📭</div><p>Нет активных заявок</p></div>';
+            }
+
+            var html = '';
+            for (var i = 0; i < deposits.length; i++) {
+                var req = deposits[i];
+                var imgUrl = getImageUrl(req.gift_id);
+                html += '<div class="admin-request">';
+                html += '<div class="header-row"><div><span class="user">' + (req.users ? req.users.tg_id : 'Неизвестно') +
+                    '</span> <span style="color:#888;margin-left:8px;">' + statusLabel(req.status) + '</span></div>';
+                html += '<span style="color:#666;font-size:11px;">' + formatDate(req.created_at) + '</span></div>';
+                html += '<div class="details"><strong>Telegram:</strong> ' + (req.tg_id || 'не указан') + '</div>';
+                html += '<div class="nft-preview">';
+                html += '<img src="' + imgUrl + '" alt="NFT" />';
+                html += '<div class="info"><div style="font-size:11px;color:#888;">Gift ID: ' + req.gift_id +
+                    '</div></div></div>';
+                html += '<div class="details"><strong>Ссылка:</strong> <a href="' + req.link +
+                    '" target="_blank">открыть</a></div>';
+                html += '<div class="actions">';
+                html += '<button class="btn btn-success" onclick="approveNFTDeposit(\'' + req.id +
+                '\')">Подтвердить</button>';
+                html += '<button class="btn btn-danger" onclick="rejectNFTDeposit(\'' + req.id +
+                '\')">Отклонить</button>';
+                html += '</div></div>';
+            }
+            return html;
+        }
+
+        async function renderNFTWithdrawsAdmin() {
+            var withdraws = await supabaseRequest('GET', 'nft_withdraw_requests', null,
+                'status=eq.pending&select=*,users(tg_id,username),nfts(*)&order=created_at.desc');
+
+            if (!withdraws || withdraws.length === 0) {
+                return '<div class="empty-state"><div class="icon">📭</div><p>Нет активных заявок</p></div>';
+            }
+
+            var html = '';
+            for (var i = 0; i < withdraws.length; i++) {
+                var req = withdraws[i];
+                var nft = req.nfts;
+                var imgUrl = nft ? getImageUrl(nft.gift_id) : '';
+                html += '<div class="admin-request">';
+                html += '<div class="header-row"><div><span class="user">' + (req.users ? req.users.tg_id : 'Неизвестно') +
+                    '</span> <span style="color:#888;margin-left:8px;">' + statusLabel(req.status) + '</span></div>';
+                html += '<span style="color:#666;font-size:11px;">' + formatDate(req.created_at) + '</span></div>';
+                html += '<div class="details"><strong>Telegram:</strong> ' + (req.tg_id || 'не указан') + '</div>';
+                if (nft) {
+                    html += '<div class="nft-preview">';
+                    html += '<img src="' + imgUrl + '" alt="' + nft.name + '" />';
+                    html += '<div class="info"><div><strong>' + nft.name +
+                        '</strong></div><div style="font-size:11px;color:#888;">Gift ID: ' + nft.gift_id +
+                        '</div></div></div>';
+                } else {
+                    html += '<div style="color:#ff6a6a;">NFT не найден</div>';
+                }
+                html += '<div class="actions">';
+                html += '<button class="btn btn-success" onclick="completeNFTWithdraw(\'' + req.id +
+                '\')">Выполнено</button>';
+                html += '<button class="btn btn-danger" onclick="cancelNFTWithdraw(\'' + req.id +
+                '\')">Отменить</button>';
+                html += '</div></div>';
+            }
+            return html;
+        }
+
+        // ============================================================
+        // БИЗНЕС-ЛОГИКА
+        // ============================================================
+
+        // --- Пополнение mCoin ---
+        async function createDepositRequest() {
+            var tgId = document.getElementById('depositTgId').value.trim();
+            var textarea = document.getElementById('depositLinks');
+            var links = textarea.value.split('\n').map(function(l) { return l.trim(); }).filter(function(l) { return l
+                    .length > 0; });
+
+            if (!tgId) {
+                document.getElementById('depositStatus').innerHTML = 'Введите Telegram Username или ID';
+                return;
+            }
+
+            if (links.length === 0) {
+                document.getElementById('depositStatus').innerHTML = 'Вставьте ссылки';
+                return;
+            }
+
+            var result = await supabaseRequest('POST', 'deposit_requests', {
+                user_id: currentUserId,
+                tg_id: tgId,
+                links: links,
+                status: 'pending'
+            });
+
+            if (result && result.length > 0) {
+                await supabaseRequest('POST', 'transactions', {
+                    user_id: currentUserId,
+                    type: 'deposit_request',
+                    description: 'Заявка на пополнение mCoin (' + links.length + ' чеков)',
+                    amount: 0,
+                    status: 'pending',
+                    links: links
+                });
+
+                document.getElementById('depositStatus').innerHTML = 'Заявка отправлена';
+                document.getElementById('depositTgId').value = '';
+                textarea.value = '';
+                initApp();
+            } else {
+                document.getElementById('depositStatus').innerHTML = 'Ошибка отправки заявки';
+            }
+        }
+
+        // --- Вывод mCoin ---
+        async function createWithdrawRequest() {
+            var tgId = document.getElementById('withdrawTgId').value.trim();
+            var input = document.getElementById('withdrawAmount');
+            var amount = parseInt(input.value);
+
+            if (!tgId) {
+                document.getElementById('withdrawStatus').innerHTML = 'Введите Telegram Username или ID';
+                return;
+            }
+
+            if (!amount || amount <= 0) {
+                document.getElementById('withdrawStatus').innerHTML = 'Введите сумму';
+                return;
+            }
+
+            var users = await supabaseRequest('GET', 'users', null, 'id=eq.' + currentUserId);
+            var user = users && users.length > 0 ? users[0] : null;
+
+            if (!user || user.mcoin_balance < amount) {
+                document.getElementById('withdrawStatus').innerHTML = 'Недостаточно mCoin. Доступно: ' + (user ?
+                    user.mcoin_balance : 0);
+                return;
+            }
+
+            var result = await supabaseRequest('POST', 'withdraw_requests', {
+                user_id: currentUserId,
+                tg_id: tgId,
+                amount: amount,
+                status: 'pending',
+                links: []
+            });
+
+            if (result && result.length > 0) {
+                await supabaseRequest('POST', 'transactions', {
+                    user_id: currentUserId,
+                    type: 'withdraw_request',
+                    description: 'Заявка на вывод ' + amount + ' mCoin',
+                    amount: 0,
+                    status: 'pending',
+                    links: []
+                });
+
+                document.getElementById('withdrawStatus').innerHTML = 'Заявка отправлена';
+                document.getElementById('withdrawTgId').value = '';
+                input.value = '';
+                initApp();
+            } else {
+                document.getElementById('withdrawStatus').innerHTML = 'Ошибка отправки заявки';
+            }
+        }
+
+        // --- Пополнение NFT ---
+        async function createNFTDepositRequest() {
+            var tgId = document.getElementById('nftDepositTgId').value.trim();
+            var linkInput = document.getElementById('nftDepositLink');
+            var link = linkInput.value.trim();
+
+            if (!tgId) {
+                document.getElementById('nftDepositStatus').innerHTML = 'Введите Telegram Username или ID';
+                return;
+            }
+
+            if (!link) {
+                document.getElementById('nftDepositStatus').innerHTML = 'Вставьте ссылку';
+                return;
+            }
+
+            if (!isValidNFTLink(link)) {
+                document.getElementById('nftDepositStatus').innerHTML =
+                    'Неверный формат. Ожидается: https://t.me/gminesbot?start=gift_ID';
+                return;
+            }
+
+            var giftId = parseGiftId(link);
+            if (!giftId) {
+                document.getElementById('nftDepositStatus').innerHTML = 'Не удалось извлечь ID';
+                return;
+            }
+
+            var existing = await supabaseRequest('GET', 'nfts', null, 'gift_id=eq.' + giftId);
+            if (existing && existing.length > 0) {
+                document.getElementById('nftDepositStatus').innerHTML = 'Этот NFT уже есть в системе';
+                return;
+            }
+
+            var result = await supabaseRequest('POST', 'nft_deposit_requests', {
+                user_id: currentUserId,
+                tg_id: tgId,
+                link: link,
+                gift_id: giftId,
+                name: '',
+                rarity: 'common',
+                status: 'pending'
+            });
+
+            if (result && result.length > 0) {
+                await supabaseRequest('POST', 'transactions', {
+                    user_id: currentUserId,
+                    type: 'nft_deposit_request',
+                    description: 'Заявка на пополнение NFT (Gift ID: ' + giftId + ')',
+                    amount: 0,
+                    status: 'pending',
+                    links: []
+                });
+
+                document.getElementById('nftDepositStatus').innerHTML = 'Заявка отправлена';
+                document.getElementById('nftDepositTgId').value = '';
+                linkInput.value = '';
+                initApp();
+            } else {
+                document.getElementById('nftDepositStatus').innerHTML = 'Ошибка отправки заявки';
+            }
+        }
+
+        // --- Покупка NFT ---
+        async function buyNFT(listingId) {
+            var listings = await supabaseRequest('GET', 'market_listings', null, 'id=eq.' + listingId +
+                '&status=eq.active&select=*,nfts(*)');
+            var listing = listings && listings.length > 0 ? listings[0] : null;
+
+            if (!listing) {
+                alert('Уже продан');
+                return;
+            }
+
+            var nft = listing.nfts;
+            if (!nft) return;
+
+            if (nft.owner_id === currentUserId) {
+                alert('Ваш NFT');
+                return;
+            }
+
+            var users = await supabaseRequest('GET', 'users', null, 'id=eq.' + currentUserId);
+            var buyer = users && users.length > 0 ? users[0] : null;
+
+            if (!buyer || buyer.mcoin_balance < listing.price) {
+                alert('Недостаточно mCoin. Нужно: ' + listing.price);
+                return;
+            }
+
+            var sellerId = nft.owner_id;
+
+            // Обновляем баланс покупателя
+            await supabaseRequest('PATCH', 'users', { mcoin_balance: buyer.mcoin_balance - listing.price },
+                'id=eq.' + currentUserId);
+
+            // Обновляем баланс продавца
+            var sellers = await supabaseRequest('GET', 'users', null, 'id=eq.' + sellerId);
+            var seller = sellers && sellers.length > 0 ? sellers[0] : null;
+            if (seller) {
+                await supabaseRequest('PATCH', 'users', { mcoin_balance: seller.mcoin_balance + listing.price },
+                    'id=eq.' + sellerId);
+            }
+
+            // Меняем владельца NFT
+            await supabaseRequest('PATCH', 'nfts', { owner_id: currentUserId }, 'id=eq.' + nft.id);
+
+            // Закрываем листинг
+            await supabaseRequest('PATCH', 'market_listings', { status: 'sold' }, 'id=eq.' + listingId);
+
+            // Транзакции
+            await supabaseRequest('POST', 'transactions', {
+                user_id: currentUserId,
+                type: 'purchase',
+                description: 'Купил ' + nft.name,
+                amount: -listing.price,
+                status: 'success',
+                links: []
+            });
+
+            await supabaseRequest('POST', 'transactions', {
+                user_id: sellerId,
+                type: 'sale',
+                description: 'Продал ' + nft.name,
+                amount: listing.price,
+                status: 'success',
+                links: []
+            });
+
+            initApp();
+            alert('Куплено за ' + listing.price + ' mCoin');
+        }
+
+        // --- Выставить на продажу ---
+        function openSell(nftId) {
+            var modal = document.getElementById('modal');
+            document.getElementById('modalTitle').textContent = 'Продать NFT';
+
+            document.getElementById('modalBody').innerHTML =
+                '<div class="form-group"><label>Цена (mCoin)</label><input type="number" id="sellPriceInput" placeholder="100" min="1" /></div>' +
+                '<button class="btn btn-primary btn-block" onclick="sellNFT(\'' + nftId +
+                '\')">Выставить</button>' +
+                '<button class="btn btn-secondary btn-block" onclick="closeModal()">Отмена</button>';
+
+            modal.classList.add('active');
+        }
+
+        async function sellNFT(nftId) {
+            var priceInput = document.getElementById('sellPriceInput');
+            var price = parseInt(priceInput.value);
+
+            if (!price || price <= 0) {
+                alert('Введите цену');
+                return;
+            }
+
+            var existing = await supabaseRequest('GET', 'market_listings', null, 'nft_id=eq.' + nftId +
+                '&status=eq.active');
+            if (existing && existing.length > 0) {
+                alert('Уже на продаже');
+                closeModal();
+                return;
+            }
+
+            var result = await supabaseRequest('POST', 'market_listings', {
+                nft_id: nftId,
+                price: price,
+                seller_id: currentUserId,
+                status: 'active'
+            });
+
+            if (result && result.length > 0) {
+                var nfts = await supabaseRequest('GET', 'nfts', null, 'id=eq.' + nftId);
+                var nft = nfts && nfts.length > 0 ? nfts[0] : null;
+
+                await supabaseRequest('POST', 'transactions', {
+                    user_id: currentUserId,
+                    type: 'listing',
+                    description: 'Выставил ' + (nft ? nft.name : 'NFT') + ' за ' + price + ' mCoin',
+                    amount: 0,
+                    status: 'success',
+                    links: []
+                });
+
+                closeModal();
+                initApp();
+                alert('Выставлен за ' + price + ' mCoin');
+            } else {
+                alert('Ошибка выставления на продажу');
+            }
+        }
+
+        // --- Снять с продажи ---
+        async function cancelSell(nftId) {
+            if (!confirm('Снять с продажи?')) return;
+
+            await supabaseRequest('PATCH', 'market_listings', { status: 'cancelled' }, 'nft_id=eq.' + nftId +
+                '&status=eq.active');
+
+            var nfts = await supabaseRequest('GET', 'nfts', null, 'id=eq.' + nftId);
+            var nft = nfts && nfts.length > 0 ? nfts[0] : null;
+
+            await supabaseRequest('POST', 'transactions', {
+                user_id: currentUserId,
+                type: 'unlist',
+                description: 'Снял с продажи ' + (nft ? nft.name : 'NFT'),
+                amount: 0,
+                status: 'success',
+                links: []
+            });
+
+            initApp();
+            alert('Снято');
+        }
+
+        // --- Передать NFT ---
+        function openTransfer(nftId) {
+            var modal = document.getElementById('modal');
+            document.getElementById('modalTitle').textContent = 'Передать NFT';
+
+            document.getElementById('modalBody').innerHTML =
+                '<div class="form-group"><label>ID получателя (user1, user2, admin)</label><input type="text" id="transferRecipient" placeholder="user2" /></div>' +
+                '<button class="btn btn-primary btn-block" onclick="transferNFT(\'' + nftId +
+                '\')">Передать</button>' +
+                '<button class="btn btn-secondary btn-block" onclick="closeModal()">Отмена</button>';
+
+            modal.classList.add('active');
+        }
+
+        async function transferNFT(nftId) {
+            var recipient = document.getElementById('transferRecipient').value.trim();
+            if (!recipient) {
+                alert('Введите получателя');
+                return;
+            }
+
+            if (recipient === currentUser) {
+                alert('Нельзя себе');
+                return;
+            }
+
+            var users = await supabaseRequest('GET', 'users', null, 'tg_id=eq.' + recipient);
+            var recipientUser = users && users.length > 0 ? users[0] : null;
+
+            if (!recipientUser) {
+                alert('Пользователь не найден');
+                return;
+            }
+
+            var listings = await supabaseRequest('GET', 'market_listings', null, 'nft_id=eq.' + nftId +
+                '&status=eq.active');
+            if (listings && listings.length > 0) {
+                alert('Снимите с продажи');
+                return;
+            }
+
+            var nfts = await supabaseRequest('GET', 'nfts', null, 'id=eq.' + nftId);
+            var nft = nfts && nfts.length > 0 ? nfts[0] : null;
+
+            await supabaseRequest('PATCH', 'nfts', { owner_id: recipientUser.id }, 'id=eq.' + nftId);
+
+            await supabaseRequest('POST', 'nft_transfers', {
+                nft_id: nftId,
+                from_user_id: currentUserId,
+                to_user_id: recipientUser.id
+            });
+
+            await supabaseRequest('POST', 'transactions', {
+                user_id: currentUserId,
+                type: 'transfer_out',
+                description: 'Передал ' + (nft ? nft.name : 'NFT') + ' пользователю ' + recipient,
+                amount: 0,
+                status: 'success',
+                links: []
+            });
+
+            await supabaseRequest('POST', 'transactions', {
+                user_id: recipientUser.id,
+                type: 'transfer_in',
+                description: 'Получил ' + (nft ? nft.name : 'NFT') + ' от ' + currentUser,
+                amount: 0,
+                status: 'success',
+                links: []
+            });
+
+            closeModal();
+            initApp();
+            alert('Передано');
+        }
+
+        // --- Вывести NFT ---
+        async function withdrawNFT(nftId) {
+            var nfts = await supabaseRequest('GET', 'nfts', null, 'id=eq.' + nftId);
+            var nft = nfts && nfts.length > 0 ? nfts[0] : null;
+
+            if (!nft) return;
+
+            var listings = await supabaseRequest('GET', 'market_listings', null, 'nft_id=eq.' + nftId +
+                '&status=eq.active');
+            if (listings && listings.length > 0) {
+                alert('Снимите с продажи');
+                return;
+            }
+
+            if (!confirm('Вывести ' + nft.name + ' обратно в игру?')) return;
+
+            await supabaseRequest('POST', 'nft_withdraw_requests', {
+                user_id: currentUserId,
+                nft_id: nftId,
+                nft_name: nft.name,
+                status: 'pending'
+            });
+
+            await supabaseRequest('PATCH', 'nfts', { status: 'processing' }, 'id=eq.' + nftId);
+
+            await supabaseRequest('POST', 'transactions', {
+                user_id: currentUserId,
+                type: 'nft_withdraw_request',
+                description: 'Заявка на вывод ' + nft.name,
+                amount: 0,
+                status: 'pending',
+                links: []
+            });
+
+            initApp();
+            alert('Заявка отправлена');
+        }
+
+        // ============================================================
+        // АДМИН-ЛОГИКА
+        // ============================================================
+
+        // --- Подтвердить пополнение mCoin ---
+        async function approveDeposit(requestId) {
+            var amount = prompt('Сумма пополнения (mCoin):', '100');
+            if (amount === null) return;
+            var num = parseInt(amount);
+            if (isNaN(num) || num <= 0) {
+                alert('Введите число');
+                return;
+            }
+
+            var deposits = await supabaseRequest('GET', 'deposit_requests', null, 'id=eq.' + requestId);
+            var req = deposits && deposits.length > 0 ? deposits[0] : null;
+
+            if (!req) return;
+
+            await supabaseRequest('PATCH', 'deposit_requests', { status: 'approved', amount: num }, 'id=eq.' +
+            requestId);
+
+            var users = await supabaseRequest('GET', 'users', null, 'id=eq.' + req.user_id);
+            var user = users && users.length > 0 ? users[0] : null;
+
+            if (user) {
+                await supabaseRequest('PATCH', 'users', { mcoin_balance: user.mcoin_balance + num }, 'id=eq.' + req
+                    .user_id);
+            }
+
+            await supabaseRequest('POST', 'transactions', {
+                user_id: req.user_id,
+                type: 'deposit',
+                description: 'Пополнение mCoin на ' + num + ' mCoin',
+                amount: num,
+                status: 'success',
+                links: req.links
+            });
+
+            initApp();
+            alert('Зачислено ' + num + ' mCoin');
+        }
+
+        // --- Отклонить пополнение mCoin ---
+        async function rejectDeposit(requestId) {
+            var comment = prompt('Причина (необязательно):', 'Чеки недействительны');
+
+            await supabaseRequest('PATCH', 'deposit_requests', { status: 'rejected', admin_comment: comment ||
+                    'Отклонено' }, 'id=eq.' + requestId);
+
+            initApp();
+            alert('Отклонено');
+        }
+
+        // --- Вставить чеки для вывода ---
+        function openChecksModal(requestId) {
+            var modal = document.getElementById('modal');
+            document.getElementById('modalTitle').textContent = 'Вставить чеки';
+
+            document.getElementById('modalBody').innerHTML =
+                '<div class="form-group"><label>Ссылки на чеки (каждая с новой строки)</label><textarea id="checksInput" placeholder="https://t.me/gminesbot?start=claim_xxx"></textarea></div>' +
+                '<button class="btn btn-primary btn-block" onclick="addChecks(\'' + requestId +
+                '\')">Сохранить</button>' +
+                '<button class="btn btn-secondary btn-block" onclick="closeModal()">Отмена</button>';
+
+            modal.classList.add('active');
+        }
+
+        async function addChecks(requestId) {
+            var textarea = document.getElementById('checksInput');
+            var links = textarea.value.split('\n').map(function(l) { return l.trim(); }).filter(function(l) { return l
+                    .length > 0; });
+
+            if (links.length === 0) {
+                alert('Вставьте ссылки');
+                return;
+            }
+
+            var withdraws = await supabaseRequest('GET', 'withdraw_requests', null, 'id=eq.' + requestId);
+            var req = withdraws && withdraws.length > 0 ? withdraws[0] : null;
+
+            if (!req) return;
+
+            await supabaseRequest('PATCH', 'withdraw_requests', { status: 'ready', links: links }, 'id=eq.' +
+            requestId);
+
+            await supabaseRequest('POST', 'transactions', {
+                user_id: req.user_id,
+                type: 'withdraw_ready',
+                description: 'Чеки на вывод ' + req.amount + ' mCoin готовы',
+                amount: 0,
+                status: 'ready',
+                links: links
+            });
+
+            closeModal();
+            initApp();
+            alert('Чеки добавлены');
+        }
+
+        // --- Подтвердить вывод mCoin ---
+        async function completeWithdraw(requestId) {
+            var withdraws = await supabaseRequest('GET', 'withdraw_requests', null, 'id=eq.' + requestId);
+            var req = withdraws && withdraws.length > 0 ? withdraws[0] : null;
+
+            if (!req || req.status !== 'ready') {
+                alert('Заявка должна быть в статусе "Готово"');
+                return;
+            }
+
+            if (!confirm('Подтвердить получение ' + req.amount + ' mCoin?')) return;
+
+            await supabaseRequest('PATCH', 'withdraw_requests', { status: 'completed' }, 'id=eq.' + requestId);
+
+            var users = await supabaseRequest('GET', 'users', null, 'id=eq.' + req.user_id);
+            var user = users && users.length > 0 ? users[0] : null;
+
+            if (user) {
+                await supabaseRequest('PATCH', 'users', { mcoin_balance: Math.max(0, user.mcoin_balance - req
+                        .amount) }, 'id=eq.' + req.user_id);
+            }
+
+            await supabaseRequest('POST', 'transactions', {
+                user_id: req.user_id,
+                type: 'withdraw_completed',
+                description: 'Вывод ' + req.amount + ' mCoin завершен',
+                amount: -req.amount,
+                status: 'success',
+                links: req.links
+            });
+
+            initApp();
+            alert('Вывод завершен');
+        }
+
+        // --- Отменить вывод mCoin ---
+        async function cancelWithdraw(requestId) {
+            if (!confirm('Отменить заявку?')) return;
+
+            await supabaseRequest('PATCH', 'withdraw_requests', { status: 'cancelled', admin_comment: 'Отменено админом' },
+                'id=eq.' + requestId);
+
+            initApp();
+            alert('Отменено');
+        }
+
+        // --- Подтвердить пополнение NFT ---
+        async function approveNFTDeposit(requestId) {
+            var name = prompt('Введите название NFT:');
+            if (name === null || name.trim() === '') {
+                alert('Название обязательно');
+                return;
+            }
+
+            var rarity = prompt('Редкость (common, rare, epic, legendary):', 'common');
+            if (!rarity) return;
+            var valid = ['common', 'rare', 'epic', 'legendary'];
+            var finalRarity = valid.indexOf(rarity.toLowerCase()) !== -1 ? rarity.toLowerCase() : 'common';
+
+            var deposits = await supabaseRequest('GET', 'nft_deposit_requests', null, 'id=eq.' + requestId);
+            var req = deposits && deposits.length > 0 ? deposits[0] : null;
+
+            if (!req) return;
+
+            var newNft = await supabaseRequest('POST', 'nfts', {
+                gift_id: req.gift_id,
+                name: name.trim(),
+                rarity: finalRarity,
+                owner_id: req.user_id,
+                status: 'in_inventory'
+            });
+
+            if (newNft && newNft.length > 0) {
+                await supabaseRequest('PATCH', 'nft_deposit_requests', { status: 'approved', name: name.trim(),
+                        rarity: finalRarity }, 'id=eq.' + requestId);
+
+                await supabaseRequest('POST', 'transactions', {
+                    user_id: req.user_id,
+                    type: 'nft_deposit',
+                    description: 'Пополнение NFT: ' + name.trim(),
+                    amount: 0,
+                    status: 'success',
+                    links: []
+                });
+
+                initApp();
+                alert('NFT добавлен');
+            } else {
+                alert('Ошибка добавления NFT');
+            }
+        }
+
+        // --- Отклонить пополнение NFT ---
+        async function rejectNFTDeposit(requestId) {
+            var comment = prompt('Причина:', 'NFT не получен');
+
+            await supabaseRequest('PATCH', 'nft_deposit_requests', { status: 'rejected', admin_comment: comment ||
+                    'Отклонено' }, 'id=eq.' + requestId);
+
+            initApp();
+            alert('Отклонено');
+        }
+
+        // --- Подтвердить вывод NFT ---
+        async function completeNFTWithdraw(requestId) {
+            if (!confirm('Вы вернули NFT в игру?')) return;
+
+            var withdraws = await supabaseRequest('GET', 'nft_withdraw_requests', null, 'id=eq.' + requestId);
+            var req = withdraws && withdraws.length > 0 ? withdraws[0] : null;
+
+            if (!req) return;
+
+            await supabaseRequest('DELETE', 'nfts', null, 'id=eq.' + req.nft_id);
+
+            await supabaseRequest('PATCH', 'market_listings', { status: 'cancelled' }, 'nft_id=eq.' + req.nft_id);
+
+            await supabaseRequest('PATCH', 'nft_withdraw_requests', { status: 'completed' }, 'id=eq.' + requestId);
+
+            await supabaseRequest('POST', 'transactions', {
+                user_id: req.user_id,
+                type: 'nft_withdraw_completed',
+                description: 'Вывод NFT: ' + req.nft_name,
+                amount: 0,
+                status: 'success',
+                links: []
+            });
+
+            initApp();
+            alert('NFT выведен');
+        }
+
+        // --- Отменить вывод NFT ---
+        async function cancelNFTWithdraw(requestId) {
+            if (!confirm('Отменить заявку?')) return;
+
+            var withdraws = await supabaseRequest('GET', 'nft_withdraw_requests', null, 'id=eq.' + requestId);
+            var req = withdraws && withdraws.length > 0 ? withdraws[0] : null;
+
+            if (!req) return;
+
+            await supabaseRequest('PATCH', 'nft_withdraw_requests', { status: 'cancelled' }, 'id=eq.' + requestId);
+
+            await supabaseRequest('PATCH', 'nfts', { status: 'in_inventory' }, 'id=eq.' + req.nft_id);
+
+            initApp();
+            alert('Отменено');
+        }
+
+        // ============================================================
+        // МОДАЛКА И НАВИГАЦИЯ
+        // ============================================================
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        function switchTab(tabId) {
+            var btns = document.querySelectorAll('.tab-btn');
+            for (var i = 0; i < btns.length; i++) {
+                btns[i].classList.remove('active');
+            }
+            var contents = document.querySelectorAll('.tab-content');
+            for (var i = 0; i < contents.length; i++) {
+                contents[i].classList.remove('active');
+            }
+
+            var btn = document.querySelector('[data-tab="' + tabId + '"]');
+            if (btn) btn.classList.add('active');
+
+            var content = document.getElementById('tab-' + tabId);
+            if (content) content.classList.add('active');
+        }
+
+        document.querySelectorAll('.tab-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                switchTab(this.dataset.tab);
+            });
+        });
+
+        // ============================================================
+        // СОЗДАНИЕ ДЕМО-ПОЛЬЗОВАТЕЛЕЙ
+        // ============================================================
+        async function createDemoUsers() {
+            var users = await supabaseRequest('GET', 'users', null, 'tg_id=eq.user1');
+
+            if (!users || users.length === 0) {
+                await supabaseRequest('POST', 'users', [
+                    { tg_id: 'user1', username: 'user1', first_name: 'Иван', password: '123', mcoin_balance: 1500,
+                        is_admin: false },
+                    { tg_id: 'user2', username: 'user2', first_name: 'Петр', password: '123', mcoin_balance: 5000,
+                        is_admin: false },
+                    { tg_id: 'admin', username: 'admin', first_name: 'Администратор', password: 'admin',
+                        mcoin_balance: 99999, is_admin: true }
+                ]);
+            }
+        }
+
+        // ============================================================
+        // ЗАПУСК
+        // ============================================================
+        createDemoUsers();
+    </script>
+
+</body>
+</html>
